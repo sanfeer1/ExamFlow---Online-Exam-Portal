@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Logo from '../components/Logo';
+import { API_BASE_URL } from '../config';
 
 const Register = ({ setUser }) => {
   const [name, setName] = useState('');
@@ -21,7 +22,7 @@ const Register = ({ setUser }) => {
     setLoading(true);
     setError('');
     try {
-      const res = await fetch('http://localhost:5000/api/student/register', {
+      const res = await fetch(`${API_BASE_URL}/api/student/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, username, email, password, role: 'student' })
@@ -29,7 +30,7 @@ const Register = ({ setUser }) => {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
 
-      const loginRes = await fetch('http://localhost:5000/api/student/login', {
+      const loginRes = await fetch(`${API_BASE_URL}/api/student/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ identifier: email, password })

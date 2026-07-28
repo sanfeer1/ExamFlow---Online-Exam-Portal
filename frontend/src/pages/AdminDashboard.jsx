@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { API_BASE_URL } from '../config';
 
 const emptyQ = { question_text: '', option_a: '', option_b: '', option_c: '', option_d: '', correct_option: 'A' };
 
@@ -79,7 +80,7 @@ const AdminDashboard = () => {
   const fetchExams = async () => {
     setExamsLoading(true); setExamsError('');
     try {
-      const res = await fetch('http://localhost:5000/api/student/exams', {
+      const res = await fetch(`${API_BASE_URL}/api/student/exams`, {
         headers: { 'Authorization': `Bearer ${token()}` }
       });
       const data = await res.json();
@@ -95,7 +96,7 @@ const AdminDashboard = () => {
   const handleCreateExam = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch('http://localhost:5000/api/tutor/exams', {
+      const res = await fetch(`${API_BASE_URL}/api/tutor/exams`, {
         method: 'POST', headers: authH(), body: JSON.stringify(newExam)
       });
       const data = await res.json();
@@ -109,7 +110,7 @@ const AdminDashboard = () => {
   const handleUpdateExam = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch(`http://localhost:5000/api/tutor/exams/${editingExam.id}`, {
+      const res = await fetch(`${API_BASE_URL}/api/tutor/exams/${editingExam.id}`, {
         method: 'PUT', headers: authH(),
         body: JSON.stringify({ title: editingExam.title, description: editingExam.description, duration_minutes: editingExam.duration_minutes })
       });
@@ -125,7 +126,7 @@ const AdminDashboard = () => {
   const handleDeleteExam = async (id) => {
     if (!window.confirm('Delete this exam? All questions and student results will be permanently removed.')) return;
     try {
-      await fetch(`http://localhost:5000/api/tutor/exams/${id}`, {
+      await fetch(`${API_BASE_URL}/api/tutor/exams/${id}`, {
         method: 'DELETE', headers: { 'Authorization': `Bearer ${token()}` }
       });
       showToast('success', 'Exam deleted.');
@@ -139,8 +140,8 @@ const AdminDashboard = () => {
     setDetailLoading(true);
     try {
       const [qRes, rRes] = await Promise.all([
-        fetch(`http://localhost:5000/api/student/questions/exam/${exam.id}`, { headers: { 'Authorization': `Bearer ${token()}` } }),
-        fetch(`http://localhost:5000/api/tutor/results/exam/${exam.id}`,    { headers: { 'Authorization': `Bearer ${token()}` } }),
+        fetch(`${API_BASE_URL}/api/student/questions/exam/${exam.id}`, { headers: { 'Authorization': `Bearer ${token()}` } }),
+        fetch(`${API_BASE_URL}/api/tutor/results/exam/${exam.id}`,    { headers: { 'Authorization': `Bearer ${token()}` } }),
       ]);
       setQuestions(await qRes.json());
       setResults(await rRes.json());
@@ -151,7 +152,7 @@ const AdminDashboard = () => {
   const handleAddQ = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch('http://localhost:5000/api/tutor/questions', {
+      const res = await fetch(`${API_BASE_URL}/api/tutor/questions`, {
         method: 'POST', headers: authH(),
         body: JSON.stringify({ ...newQ, exam_id: selectedExam.id })
       });
@@ -166,7 +167,7 @@ const AdminDashboard = () => {
   const handleUpdateQ = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch(`http://localhost:5000/api/tutor/questions/${editingQ.id}`, {
+      const res = await fetch(`${API_BASE_URL}/api/tutor/questions/${editingQ.id}`, {
         method: 'PUT', headers: authH(), body: JSON.stringify(editingQ)
       });
       const data = await res.json();
@@ -180,7 +181,7 @@ const AdminDashboard = () => {
   const handleDeleteQ = async (qId) => {
     if (!window.confirm('Delete this question?')) return;
     try {
-      await fetch(`http://localhost:5000/api/tutor/questions/${qId}`, {
+      await fetch(`${API_BASE_URL}/api/tutor/questions/${qId}`, {
         method: 'DELETE', headers: { 'Authorization': `Bearer ${token()}` }
       });
       showToast('success', 'Question deleted.');

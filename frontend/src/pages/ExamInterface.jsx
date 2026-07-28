@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { API_BASE_URL } from '../config';
 
 const ExamInterface = ({ user }) => {
   const { id } = useParams();
@@ -22,7 +23,7 @@ const ExamInterface = ({ user }) => {
     setIsSubmitting(true);
     setShowReview(false);
     try {
-      const res = await fetch('http://localhost:5000/api/student/results', {
+      const res = await fetch(`${API_BASE_URL}/api/student/results`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('token')}` },
         body: JSON.stringify({ exam_id: id, answers })
@@ -43,8 +44,8 @@ const ExamInterface = ({ user }) => {
     (async () => {
       try {
         const [eRes, qRes] = await Promise.all([
-          fetch(`http://localhost:5000/api/student/exams/${id}`, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } }),
-          fetch(`http://localhost:5000/api/student/questions/exam/${id}`, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } }),
+          fetch(`${API_BASE_URL}/api/student/exams/${id}`, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } }),
+          fetch(`${API_BASE_URL}/api/student/questions/exam/${id}`, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } }),
         ]);
         const eData = await eRes.json();
         if (!eRes.ok) throw new Error(eData.error);

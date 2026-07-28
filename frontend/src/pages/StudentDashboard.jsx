@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { API_BASE_URL } from '../config';
 
 /* ─── Result Detail Modal ──────────────────────────────────────── */
 const ResultDetail = ({ resultId, onClose }) => {
@@ -10,7 +11,7 @@ const ResultDetail = ({ resultId, onClose }) => {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch(`http://localhost:5000/api/student/results/${resultId}/detail`, {
+        const res = await fetch(`${API_BASE_URL}/api/student/results/${resultId}/detail`, {
           headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
         });
         const data = await res.json();
@@ -147,17 +148,26 @@ const StudentDashboard = ({ user }) => {
   }, []);
 
   const fetchExams = async () => {
+    const token = localStorage.getItem('token');
     try {
-      const res = await fetch('http://localhost:5000/api/student/exams', {
-        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+      const res = await fetch(`${API_BASE_URL}/api/student/exams`, {
+        headers: { 'Authorization': `Bearer ${token}` }
       });
-      setExams(await res.json());
+      const data = await res.json();
+      if (res.ok) setExams(data);
+    } catch {}
+
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/student/results/student`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      setResults(await res.json());
     } catch { /* silent */ }
   };
 
   const fetchResults = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/student/results/student', {
+      const res = await fetch(`${API_BASE_URL}/api/student/results/student`, {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
       setResults(await res.json());

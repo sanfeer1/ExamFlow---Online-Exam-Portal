@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { API_BASE_URL } from '../config';
 
 /* ─── Shared field components ──────────────────────────────────── */
 const Field = ({ label, children, full = false }) => (
@@ -90,7 +91,7 @@ const Profile = ({ user, setUser }) => {
     }
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:5000/api/student/profile', {
+      const res = await fetch(`${API_BASE_URL}/api/student/profile`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
