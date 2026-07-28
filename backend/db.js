@@ -3,9 +3,18 @@ const fs = require("fs");
 const path = require("path");
 require("dotenv").config();
 
-const sslConfig = {
-    ca: fs.readFileSync(path.join(__dirname, "ca.pem"))
+const getSslConfig = () => {
+    if (process.env.DB_CA_CERT) {
+        return { ca: process.env.DB_CA_CERT };
+    }
+    const caPath = path.join(__dirname, "ca.pem");
+    if (fs.existsSync(caPath)) {
+        return { ca: fs.readFileSync(caPath) };
+    }
+    return { rejectUnauthorized: false };
 };
+
+const sslConfig = getSslConfig();
 
 const pool = mysql.createPool({
     host: process.env.DB_HOST,
