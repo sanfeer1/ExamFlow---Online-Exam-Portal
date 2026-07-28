@@ -23,16 +23,20 @@ const initDB = async () => {
     let connection;
 
     try {
+        const dbName = process.env.DB_NAME || "online_exam_portal";
+
         connection = await mysql.createConnection({
             host: process.env.DB_HOST,
             port: process.env.DB_PORT,
             user: process.env.DB_USER,
             password: process.env.DB_PASSWORD,
-            database: process.env.DB_NAME,
             ssl: sslConfig
         });
 
-        console.log("Connected to Aiven MySQL.");
+        await connection.query(`CREATE DATABASE IF NOT EXISTS \`${dbName}\`;`);
+        await connection.query(`USE \`${dbName}\`;`);
+
+        console.log(`Connected to Aiven MySQL. Database '${dbName}' ready.`);
 
         await connection.query(`
             CREATE TABLE IF NOT EXISTS users (
