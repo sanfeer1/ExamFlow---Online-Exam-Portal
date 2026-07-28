@@ -16,7 +16,7 @@ router.post('/register', async (req, res) => {
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        const userRole = 'student'; // Role is always student on public registration
+        const userRole = role === 'admin' ? 'admin' : 'student';
 
         const [result] = await pool.query(
             'INSERT INTO users (name, username, email, password, role) VALUES (?, ?, ?, ?, ?)',

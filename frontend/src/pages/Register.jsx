@@ -8,6 +8,7 @@ const Register = ({ setUser }) => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [role, setRole] = useState('student');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -25,7 +26,7 @@ const Register = ({ setUser }) => {
       const res = await fetch(`${API_BASE_URL}/api/student/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, username, email, password, role: 'student' })
+        body: JSON.stringify({ name, username, email, password, role })
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
@@ -40,7 +41,7 @@ const Register = ({ setUser }) => {
       localStorage.setItem('token', loginData.token);
       localStorage.setItem('user', JSON.stringify(loginData.user));
       setUser(loginData.user);
-      navigate('/dashboard');
+      navigate(loginData.user.role === 'admin' ? '/admin' : '/dashboard');
     } catch (err) {
       setError(err.message);
     } finally {
@@ -97,6 +98,19 @@ const Register = ({ setUser }) => {
                 style={{ marginBottom: 0 }}
               />
             </div>
+          </div>
+
+          <div className="form-group" style={{ marginTop: '12px' }}>
+            <label className="form-label" htmlFor="role">Account Type</label>
+            <select
+              id="role"
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+              style={{ marginBottom: 0 }}
+            >
+              <option value="student">🎓 Student</option>
+              <option value="admin">⚙️ Teacher / Admin</option>
+            </select>
           </div>
 
           <div className="form-group" style={{ marginTop: '12px' }}>
